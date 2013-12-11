@@ -1,0 +1,76 @@
+= Arquillian Cluster Extension
+
+== Use case
+
+The TestSuite is written to handle a single container using a single deployment,
+but the environment for production is clustered. 
+
+In a normal setting you can define within Arquillian,
+using @TargetsContainer and @OperatesOnDeployment, which container
+to deploy to and which to execute the tests on. 
+
+In this scenario, we don't care. All we want is to rerun the Single Container
+Test Suite on a Clustered backend.
+
+The Extension will automatically replicate the Deployments to all Containers
+in the ContainerRegistry and randomly execute the individual @Test methods
+within a TestClass on the different nodes. 
+
+WARNING: No consideration is given to state kept within the given TestClass.
+
+== Usage
+
+The only thing required is to place this artifact on the test classpath.
+
+[source, xml]
+----
+<dependency>
+  <groupId>org.jboss.arquillian.extension</groupdId>
+  <artifactId>arquillian-cluster</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <scope>test</scope>
+</dependency>
+----
+
+== Running Manual Tests
+
+This extension currently has no automatic tests, but comes with a test
+the can be used for manual verification.
+
+It's setup to use two Remote WildFly 8 containers.
+
+To run you need to start two nodes:
+
+[source, console]
+----
+WILDFLY_1_HOME$ ./standalone.sh
+----
+
+[source, console]
+----
+WILDFLY_2_HOME$ ./standalone.sh -Djboss.socket.binding.port-offset=100
+----
+
+[source, console]
+----
+$mvn clean install -Parq-wildfly-remote
+----
+
+In the Console log of the two containers you should be able to see something
+similar to:
+
+[source, console]
+----
+17:00:00,208 INFO  [stdout] (default task-2) Weeeee: 3
+17:00:00,239 INFO  [stdout] (default task-5) Weeeee: 4
+17:00:00,260 INFO  [stdout] (default task-6) Weeeee: 5
+17:00:00,282 INFO  [stdout] (default task-8) Weeeee: 6
+----
+
+[source, console]
+----
+17:00:00,208 INFO  [stdout] (default task-2) Weeeee: 1
+17:00:00,239 INFO  [stdout] (default task-5) Weeeee: 2
+----
+
+NOTE: It's Random and not Round Robin, so don't be surprised if one Containers gets more hits then the other. :)
