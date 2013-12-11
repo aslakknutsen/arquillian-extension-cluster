@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<arquillian xmlns="http://jboss.org/schema/arquillian"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.org/schema/arquillian http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
+
+    <defaultProtocol type="Servlet 3.0" />
+
+    <container qualifier="Node2" default="false">
+      <configuration>
+        <property name="managementPort">9990</property>
+      </configuration>
+    </container>
+
+  <group qualifier="Cluster" default="true">
+    <container qualifier="Node1" default="true">
+    
+    </container>
+    <container qualifier="Node2">
+      <configuration>
+        <property name="managementPort">10090</property>
+      </configuration>
+    </container>
+  </group>
+</arquillian>

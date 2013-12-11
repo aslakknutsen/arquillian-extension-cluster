@@ -1,0 +1,2 @@
+!org.jboss.arquillian.container.test.impl.ContainerTestExtension
+org.jboss.arquillian.extension.cluster.ClusterExtension
